@@ -205,6 +205,12 @@ it grow:
   (`.github/FUNDING.yml`).
 - **Share it** — a star and a link help find collaborators.
 
+## Deploying
+
+The demo is hosted on GitHub Pages from the `gh-pages` branch. See
+[DEPLOY.md](DEPLOY.md) for how to redeploy and how to switch to automatic CI
+deploys via the included workflow example.
+
 ## License
 
 MIT — see [LICENSE](LICENSE). Do what you like; a credit is appreciated.
