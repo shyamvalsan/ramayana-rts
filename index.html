@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ramayana RTS</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🏹</text></svg>" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&display=swap" />
+  <link rel="stylesheet" href="/src/style.css" />
+</head>
+<body>
+  <div id="app" class="frame">
+    <div id="top-bar" class="top-bar"></div>
+    <div id="viewport" class="viewport">
+      <canvas id="game"></canvas>
+      <div id="ui-overlay"></div>
+    </div>
+    <div id="bottom-bar" class="bottom-bar">
+      <div id="bb-portrait" class="bb-section bb-portrait"></div>
+      <div id="bb-actions"  class="bb-section bb-actions"></div>
+      <div id="bb-minimap"  class="bb-section bb-minimap"></div>
+      <div id="bb-system"   class="bb-section bb-system"></div>
+    </div>
+    <div id="overlay" class="overlay title-overlay">
+      <div class="title-wrap">
+        <div class="title-logo">
+          <div class="title-main">Ramayana</div>
+          <div class="title-sub">A Real-Time Strategy Campaign</div>
+          <div class="title-rule"></div>
+          <div class="title-tagline">Guard the sacred fire, raise a settlement in exile, and storm the citadel of Lanka. Command Rama and Lakshmana across three chapters.</div>
+        </div>
+        <div class="title-menu">
+          <button id="start-btn"    class="menu-btn primary">Begin Campaign</button>
+          <button id="title-howto"  class="menu-btn">How to Play</button>
+          <button id="title-credits" class="menu-btn">Credits</button>
+          <button id="title-settings" class="menu-btn">Settings</button>
+        </div>
+        <div class="title-footer">Tap any button to begin · A Ramayana RTS prototype</div>
+      </div>
+    </div>
+    <div id="end-overlay" class="overlay hidden">
+      <div class="panel end-panel">
+        <h1 id="end-title">Victory</h1>
+        <p id="end-text"></p>
+        <div id="coming-next" class="coming-next hidden">
+          <h2>The Journey Continues</h2>
+          <p class="sub">Your demo ends here, but the Ramayana is just beginning. These are the chapters being built next:</p>
+          <div class="chapter-grid">
+            <a class="chapter" href="javascript:void(0)" title="Aranya Kanda — Coming Soon">
+              <img src="sprites/teaser-aranya-kanda.png" alt="Aranya Kanda — Coming Soon" />
+              <div class="chapter-label">Aranya Kanda</div>
+              <div class="chapter-sub">The Forest Exile</div>
+            </a>
+            <a class="chapter" href="javascript:void(0)" title="Kishkindha Kanda — Coming Soon">
+              <img src="sprites/teaser-kishkindha-kanda.png" alt="Kishkindha Kanda — Coming Soon" />
+              <div class="chapter-label">Kishkindha Kanda</div>
+              <div class="chapter-sub">The Vanara Allies</div>
+            </a>
+            <a class="chapter" href="javascript:void(0)" title="Yuddha Kanda — Coming Soon">
+              <img src="sprites/teaser-yuddha-kanda.png" alt="Yuddha Kanda — Coming Soon" />
+              <div class="chapter-label">Yuddha Kanda</div>
+              <div class="chapter-sub">The Siege of Lanka</div>
+            </a>
+          </div>
+        </div>
+        <div class="end-actions">
+          <button id="next-chapter-btn" class="menu-btn primary hidden">Next Chapter</button>
+          <button id="restart-btn" class="menu-btn">Play Again</button>
+          <button id="end-to-title" class="menu-btn">Back to Title</button>
+        </div>
+      </div>
+    </div>
+    <div id="mission-select" class="overlay hidden">
+      <div class="panel mission-select-panel">
+        <h1>The Ramayana</h1>
+        <p class="sub">Choose your chapter</p>
+        <div id="mission-grid" class="mission-grid"></div>
+        <div class="end-actions">
+          <button id="mission-back" class="menu-btn">Back to Title</button>
+        </div>
+      </div>
+    </div>
+    <div id="credits-overlay" class="overlay hidden">
+      <div class="panel credits-panel">
+        <button class="close-btn" id="credits-close">×</button>
+        <h1>Credits</h1>
+        <div class="credits-grid">
+          <div class="cred-section">
+            <h2>Design &amp; Engineering</h2>
+            <p>The game engine, the three-chapter campaign, the mission scripting, the enemy AI, and the tech tree were designed and built by <b>Claude Fable&nbsp;5</b> (Anthropic) — the brains behind this project — working from Valmiki's Ramayana.</p>
+            <p>Later polish and the open-source release were carried on by <b>Claude Opus&nbsp;4.8</b>.</p>
+          </div>
+          <div class="cred-section">
+            <h2>Story</h2>
+            <p>Adapted across three kandas of the Ramayana: <i>Bala</i> (defending Vishwamitra's Yajna against Tataka), <i>Aranya</i> (the exile at Panchavati and Khara's assault), and <i>Yuddha</i> (the siege of Lanka and the fall of Ravana).</p>
+          </div>
+          <div class="cred-section">
+            <h2>Art</h2>
+            <p>All illustrations, cutscenes, unit and building sprites, terrain textures, UI ornaments and icons generated with OpenAI's <b>gpt-image-2</b>, with a shared style preamble and character-continuity rules so the set reads as one painted storybook. Walls, gates, and campaign bosses render procedurally or by reusing base art.</p>
+          </div>
+          <div class="cred-section">
+            <h2>Code &amp; Audio</h2>
+            <p>TypeScript on HTML5 Canvas with Vite. Custom A* pathfinding, an FSM unit model, fog of war, a data-driven mission framework, a seeded deterministic sim with save/load, and an agent API for scripted play. SFX and ambient music are synthesized live in the Web Audio API. Inspired by OpenAge, 0 A.D., and Age of Empires II.</p>
+          </div>
+          <div class="cred-section">
+            <h2>Open source</h2>
+            <p>MIT-licensed and open to the community. Contributions, new missions, art, and balance passes are welcome — see the repository's README and CONTRIBUTING guide.</p>
+          </div>
+        </div>
+        <p class="help-foot">Built with AI-assisted development. Continue the journey — the repo is open.</p>
+      </div>
+    </div>
+    <div id="pause-overlay" class="overlay hidden pause-overlay">
+      <div class="panel pause-panel">
+        <h1>Paused</h1>
+        <div class="title-menu">
+          <button id="pause-resume"   class="menu-btn primary">Resume</button>
+          <button id="pause-save"     class="menu-btn">Save Game (F5)</button>
+          <button id="pause-load"     class="menu-btn">Load Game (F9)</button>
+          <button id="pause-settings" class="menu-btn">Settings</button>
+          <button id="pause-howto"    class="menu-btn">How to Play</button>
+          <button id="pause-to-title" class="menu-btn">Quit to Title</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script type="module" src="/src/main.ts"></script>
+</body>
+</html>

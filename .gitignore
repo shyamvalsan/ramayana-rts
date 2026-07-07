@@ -1,0 +1,7 @@
+node_modules/
+dist/
+.env
+*.tsbuildinfo
+.playwright-mcp/
+# Dev screenshots accumulate at repo root during playtesting.
+/*.png

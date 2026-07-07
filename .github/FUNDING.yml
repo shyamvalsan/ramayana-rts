@@ -1,0 +1,7 @@
+# Enables the "Sponsor" button on the GitHub repo. Fill in / adjust the
+# handles you actually use. Anything left blank is ignored by GitHub.
+github: [shyamvalsan]
+# ko_fi:
+# patreon:
+# open_collective:
+# custom: ["https://your-donate-link"]
