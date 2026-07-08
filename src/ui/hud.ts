@@ -85,7 +85,7 @@ export class HUD {
     ) => {
       const row = el('div', { class: `resource ${key}` });
       row.title = title;
-      const img = el('img', { class: 'res-icon', src: asset(`sprites/${icon}.png`), alt: name });
+      const img = el('img', { class: 'res-icon', src: asset(`sprites/${icon}.webp`), alt: name });
       // If the icon fails to load, fall back to a colored swatch dot.
       (img as HTMLImageElement).onerror = () => {
         const sw = el('span', { class: 'swatch' });
@@ -224,7 +224,7 @@ export class HUD {
     const isBuilding = e.kind === 'building';
     const def: any = isUnit ? UNIT_DEFS[e.typeId] : isBuilding ? BUILDING_DEFS[e.typeId] : null;
     const spriteKey = isUnit ? unitSpriteKey(e.typeId) : isBuilding ? buildingSpriteKey(e.typeId) : null;
-    const portrait = spriteKey ? `<img src="${asset(`sprites/${spriteKey}.png`)}" alt="" />` : '';
+    const portrait = spriteKey ? `<img src="${asset(`sprites/${spriteKey}.webp`)}" alt="" />` : '';
     const hpPct = Math.max(0, e.hp / Math.max(1, e.maxHp));
     const hpClass = hpPct > 0.5 ? '' : (hpPct > 0.25 ? 'low' : 'critical');
     let stats = '';
@@ -280,7 +280,7 @@ export class HUD {
       const row = el('div', { class: 'action-grid' });
       const b = el('button', { class: 'act-btn ability-btn' + (ready ? '' : ' on-cooldown') });
       b.title = def.description + (def.hotkey ? ` — Hotkey: ${def.hotkey}` : '');
-      const icon = def.iconKey ? `<img class="ability-icon" src="${asset(`sprites/${def.iconKey}.png`)}" alt="" />` : '';
+      const icon = def.iconKey ? `<img class="ability-icon" src="${asset(`sprites/${def.iconKey}.webp`)}" alt="" />` : '';
       const cdMask = ready
         ? ''
         : `<div class="cd-mask" style="height:${cdFrac * 100}%"></div><div class="cd-text">${remaining}s</div>`;

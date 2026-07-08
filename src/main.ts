@@ -595,7 +595,7 @@ function openMissionSelect() {
     const card = document.createElement('button');
     card.className = 'mission-card' + (unlocked ? '' : ' locked') + (completed ? ' completed' : '');
     card.innerHTML = `
-      <img src="${asset(`sprites/${m.teaserKey}.png`)}" alt="" draggable="false"/>
+      <img src="${asset(`sprites/${m.teaserKey}.webp`)}" alt="" draggable="false"/>
       <span class="mc-chapter">${m.chapter}</span>
       <span class="mc-title">${m.title}</span>
       <span class="mc-desc">${unlocked ? m.description : 'Complete the previous chapter to unlock.'}</span>

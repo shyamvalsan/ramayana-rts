@@ -166,14 +166,14 @@ export function preloadSprites(onReady?: () => void) {
       tick();
     };
     img.onerror = () => { CACHE.set(key, null); tick(); };
-    img.src = asset(`sprites/${key}.png`);
+    img.src = asset(`sprites/${key}.webp`);
     CACHE.set(key, img);
   }
   for (const key of SCENE_KEYS) {
     const img = new Image();
     img.onload = () => tick();
     img.onerror = () => { CACHE.set(key, null); tick(); };
-    img.src = asset(`sprites/${key}.png`);
+    img.src = asset(`sprites/${key}.webp`);
     CACHE.set(key, img);
   }
   // Terrain tile textures — pre-scale to ~256px so they tile densely without
@@ -196,7 +196,7 @@ export function preloadSprites(onReady?: () => void) {
       tick();
     };
     img.onerror = () => { TERRAIN.set(key, null); tick(); };
-    img.src = asset(`sprites/${key}.png`);
+    img.src = asset(`sprites/${key}.webp`);
     CACHE.set(key, img);
   }
 }

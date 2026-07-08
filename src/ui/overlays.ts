@@ -255,7 +255,7 @@ export class CutscenePlayer {
     const isLast = this.currentIdx === this.panels.length - 1;
     const narr = panel.narration ? `<div class="cutscene-narration">${escapeHtml(panel.narration)}</div>` : '';
     this.el.innerHTML = `
-      <img class="cutscene-image" src="${asset(`sprites/${panel.id}.png`)}" alt="" />
+      <img class="cutscene-image" src="${asset(`sprites/${panel.id}.webp`)}" alt="" />
       ${narr}
       <div class="cutscene-controls">
         <button class="cutscene-skip">Skip ▶</button>
