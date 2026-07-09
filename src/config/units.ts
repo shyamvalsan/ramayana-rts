@@ -28,6 +28,9 @@ export interface UnitDef {
   hpRegen?: number;
   // Fog-of-war vision radius in tiles. Omitted → fog default (7 for units).
   sightRange?: number;
+  // Protected VIPs (sages) you defend but don't command — excluded from
+  // drag-box selection so they aren't swept into your army by accident.
+  noBoxSelect?: boolean;
   // ---- Boss / reskin support (campaign bosses reuse existing sprite sets) ----
   /** Draw with another typeId's sprite set (e.g. khara borrows 'subahu'). */
   spriteBase?: string;
@@ -244,6 +247,7 @@ export const UNIT_DEFS: Record<string, UnitDef> = {
     speed: 30,
     armor: 2,
     hpRegen: 2,
+    noBoxSelect: true,
     trainTime: 0,
     cost: {},
     popCost: 0,
@@ -262,6 +266,7 @@ export const UNIT_DEFS: Record<string, UnitDef> = {
     speed: 30,
     armor: 3,
     hpRegen: 2,
+    noBoxSelect: true,
     trainTime: 0,
     cost: {},
     popCost: 0,

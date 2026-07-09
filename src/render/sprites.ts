@@ -134,9 +134,8 @@ const SPRITE_KEYS = [
 ];
 
 const SCENE_KEYS = [
-  'title-background',
-  'victory-background',
-  'defeat-background',
+  // title/victory/defeat backgrounds are CSS-only (src/assets, hashed by Vite),
+  // not canvas-drawn — so they are not preloaded here.
   // Cutscenes (intro story — GPT-scripted, 6 panels).
   'cutscene-01',
   'cutscene-02',
@@ -254,15 +253,28 @@ export function buildingSpriteKey(typeId: string): string | null {
   return null;
 }
 
-// HUD-panel portrait (bust).
+// HUD-panel portrait (bust). Falls back to the top-down sprite for heroes,
+// VIPs, bosses and wildlife that have no dedicated bust, so the selection
+// panel never shows an empty black frame.
 export function unitSpriteKey(typeId: string): string | null {
-  typeId = unitSpriteType(typeId);
-  if (typeId === 'villager' || typeId === 'villager_enemy') return 'unit-villager';
-  if (typeId === 'spearman') return 'unit-spearman';
-  if (typeId === 'spearman_enemy') return 'unit-rakshasa-spear';
-  if (typeId === 'archer' || typeId === 'archer_enemy') return 'unit-archer';
-  if (typeId === 'cavalry' || typeId === 'cavalry_enemy') return 'unit-cavalry';
-  return null;
+  const t = unitSpriteType(typeId);
+  if (t === 'villager' || t === 'villager_enemy') return 'unit-villager';
+  if (t === 'spearman') return 'unit-spearman';
+  if (t === 'spearman_enemy') return 'unit-rakshasa-spear';
+  if (t === 'archer' || t === 'archer_enemy') return 'unit-archer';
+  if (t === 'cavalry' || t === 'cavalry_enemy') return 'unit-cavalry';
+  if (t === 'tataka') return 'portrait-tataka';
+  return unitTopdownSpriteKey(typeId);
+}
+
+/** A portrait image source for the HUD: the chroma-keyed (transparent) canvas
+ *  as a data URL when available, else the raw sprite URL. Keeps hero/boss
+ *  portraits from showing their cream keying background in the panel. */
+export function portraitSrc(spriteKey: string): string | null {
+  const s = getSprite(spriteKey);
+  if (s instanceof HTMLCanvasElement) return s.toDataURL();
+  if (s instanceof HTMLImageElement) return s.src;
+  return null; // still loading
 }
 
 // In-game top-down gameplay sprite (S facing — used when no direction is known).

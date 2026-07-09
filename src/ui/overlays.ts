@@ -254,8 +254,16 @@ export class CutscenePlayer {
     const panel = this.panels[this.currentIdx];
     const isLast = this.currentIdx === this.panels.length - 1;
     const narr = panel.narration ? `<div class="cutscene-narration">${escapeHtml(panel.narration)}</div>` : '';
+    // Render the caption as a DOM bar over the image's bottom band. The images
+    // have the title baked in, but gpt-image spelled panel 1's as "Darkeness";
+    // overlaying the (correct) caption from story.json covers the baked text
+    // on every panel and keeps titles crisp and consistent.
+    const cap = panel.caption ? `<div class="cutscene-caption">${escapeHtml(panel.caption)}</div>` : '';
     this.el.innerHTML = `
-      <img class="cutscene-image" src="${asset(`sprites/${panel.id}.webp`)}" alt="" />
+      <div class="cutscene-frame">
+        <img class="cutscene-image" src="${asset(`sprites/${panel.id}.webp`)}" alt="" />
+        ${cap}
+      </div>
       ${narr}
       <div class="cutscene-controls">
         <button class="cutscene-skip">Skip ▶</button>

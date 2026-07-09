@@ -108,6 +108,11 @@ export class TutorialManager {
     this.game = game;
   }
 
+  /** True while the walkthrough is still showing (not yet finished/skipped). */
+  get isActive(): boolean {
+    return !this.completed;
+  }
+
   tick(now: number) {
     if (this.completed) return;
     if (now - this.lastCheckAt < 0.25) return;

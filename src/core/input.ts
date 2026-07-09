@@ -416,6 +416,8 @@ function unitsInBox(game: Game, w1: Vec2, w2: Vec2, owner: number): Entity[] {
   const picked: Entity[] = [];
   for (const e of game.entities.values()) {
     if (e.dead || e.kind !== 'unit' || e.owner !== owner) continue;
+    // Protected VIPs (sages) are defended, not commanded — never box-selected.
+    if (UNIT_DEFS[e.typeId]?.noBoxSelect) continue;
     if (e.pos.x >= lx && e.pos.x <= rx && e.pos.y >= tyExpanded && e.pos.y <= by) picked.push(e);
   }
   return picked;

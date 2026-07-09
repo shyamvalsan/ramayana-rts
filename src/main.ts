@@ -36,6 +36,20 @@ const params = new URLSearchParams(window.location.search);
 const HEADLESS = params.has('headless');
 const SKIP_INTRO = params.has('skipintro');
 const AUTOPILOT = params.has('autopilot');
+
+// Touch/small-screen visitors get a "play on desktop" notice rather than a
+// broken canvas RTS. They can dismiss it ("Try anyway"). Skipped for headless.
+if (!HEADLESS) {
+  const coarse = window.matchMedia?.('(pointer: coarse)').matches ?? false;
+  const smallish = Math.min(window.innerWidth, window.innerHeight) < 640;
+  if (coarse || smallish) {
+    const gate = document.getElementById('device-gate');
+    gate?.classList.remove('hidden');
+    document.getElementById('device-anyway')?.addEventListener('click', () => {
+      gate?.classList.add('hidden');
+    });
+  }
+}
 const initialSpeed = params.has('speed') ? parseFloat(params.get('speed')!) || 1 : 1;
 let speedMultiplier = HEADLESS ? 10 : initialSpeed;
 let paused = false;
@@ -138,6 +152,16 @@ function newGame() {
   // The scripted tutorial walks the Bala Kanda opening; other missions rely
   // on their briefing + help overlay.
   tutorial = currentMission.id === 'bala-kanda' ? new TutorialManager(uiOverlay, game) : null;
+  // Hold the wave clock while the tutorial is on screen so a new player can
+  // read and practice without being overrun; release it (waves begin) when the
+  // briefing is finished or skipped.
+  if (tutorial?.isActive) {
+    game.waveHold = true;
+    tutorial.onComplete = () => {
+      game.waveHold = false;
+      game.notify('The rakshasas approach — defend the Yajna!');
+    };
+  }
   // Spin up an AutoPlayer pointed at the mission anchor. It only acts when enabled.
   const anchorEnt = Array.from(game.entities.values()).find(
     e => e.kind === 'building' && e.owner === 1 && currentMission.anchorTypeIds.includes(e.typeId));

@@ -178,6 +178,12 @@ export class Game {
   outcome: 'playing' | 'won' | 'lost' = 'playing';
   outcomeAt = 0;
 
+  // When true, wave directors freeze their schedule (no enemy spawns). Used to
+  // give new players a calm sandbox during the tutorial — the sim still runs
+  // (deer wander, heroes can practice) but no rakshasas attack until the
+  // briefing is dismissed.
+  waveHold = false;
+
   // Persistent record that the boss has ever existed — the entity itself is
   // reaped ~1s after death, so win checks must NOT rescan entities for her.
   tatakaEverSpawned = false;
@@ -859,6 +865,7 @@ export class Game {
     return {
       now: this.simTime,
       rng: this.rng,
+      waveHold: this.waveHold,
       ownerId: aiOwner,
       entities: this.entities,
       resources: this.resources,

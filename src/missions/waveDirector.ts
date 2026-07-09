@@ -69,6 +69,13 @@ export class WaveDirector {
   }
 
   tick(deps: any) {
+    // Wave hold (tutorial sandbox): freeze the schedule at ~0 elapsed so no
+    // enemies spawn and the HUD shows a steady countdown to the first wave.
+    if (deps.waveHold) {
+      this.startTime = deps.now;
+      this.nextWaveScheduledAt = this.waves.length ? deps.now + this.waves[0].at * this.waveScale : -1;
+      return;
+    }
     const elapsed = deps.now - this.startTime;
     while (this.nextWaveIdx < this.waves.length
       && elapsed >= this.waves[this.nextWaveIdx].at * this.waveScale) {

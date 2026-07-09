@@ -30,6 +30,11 @@
 
 * { box-sizing: border-box; }
 
+/* Generic hide utility. Must beat button/overlay display rules regardless of
+ * source order, so elements toggled with .hidden (e.g. #next-chapter-btn) are
+ * reliably hidden — a .menu-btn with .hidden was otherwise still showing. */
+.hidden { display: none !important; }
+
 /* The Cinzel display font is loaded via <link> tags in index.html — an
  * @import placed here (after other rules) is ignored per the CSS spec. */
 
@@ -118,7 +123,7 @@ html, body {
 .bb-section {
   background:
     linear-gradient(to bottom, rgba(40,28,18,0.35), rgba(8,4,2,0.65)),
-    url('/sprites/ui-panel-bg.png');
+    url('./assets/ui-panel-bg.webp');
   background-size: cover, 240px 240px;
   background-position: center, center;
   border: 1px solid var(--panel-border);
@@ -325,7 +330,7 @@ html, body {
   height: 52px;
   background:
     linear-gradient(to bottom, rgba(60,40,22,0.5) 0%, rgba(20,10,4,0.7) 100%),
-    url('/sprites/ui-button-stone.png');
+    url('./assets/ui-button-stone.webp');
   background-size: cover, cover;
   background-position: center, center;
   border: 1px solid var(--panel-border);
@@ -381,7 +386,7 @@ html, body {
   height: 60px !important;
   background:
     linear-gradient(to bottom, rgba(120, 80, 30, 0.55), rgba(60, 30, 10, 0.85)),
-    url('/sprites/ui-button-stone.png') !important;
+    url('./assets/ui-button-stone.webp') !important;
   background-size: cover, cover !important;
   border: 1px solid var(--accent) !important;
   box-shadow:
@@ -461,7 +466,7 @@ html, body {
   height: 44px;
   background:
     linear-gradient(to bottom, rgba(60,40,22,0.5) 0%, rgba(20,10,4,0.7) 100%),
-    url('/sprites/ui-button-stone.png');
+    url('./assets/ui-button-stone.webp');
   background-size: cover, cover;
   background-position: center, center;
   border: 1px solid var(--panel-border);
@@ -560,7 +565,7 @@ html, body {
 #overlay {
   background-image:
     linear-gradient(rgba(8, 6, 4, 0.45) 0%, rgba(8, 6, 4, 0.20) 35%, rgba(8, 6, 4, 0.75) 100%),
-    url('/sprites/title-background.png');
+    url('./assets/title-background.webp');
 }
 
 .title-wrap {
@@ -639,7 +644,7 @@ html, body {
 .menu-btn {
   background:
     linear-gradient(to bottom, rgba(60,40,22,0.85) 0%, rgba(20,10,4,0.92) 100%),
-    url('/sprites/ui-button-stone.png');
+    url('./assets/ui-button-stone.webp');
   background-size: cover, cover;
   background-position: center, center;
   border: 1px solid var(--panel-border);
@@ -707,6 +712,9 @@ html, body {
   width: 92vw;
   max-height: 90vh;
   overflow-y: auto;
+  /* Never scroll horizontally: a phantom h-scrollbar from a few px of shadow
+   * overflow steals height and triggers a spurious v-scrollbar too. */
+  overflow-x: hidden;
 }
 
 /* Coming-Next chapter teaser grid */
@@ -831,13 +839,13 @@ html, body {
 #end-overlay.victory {
   background-image:
     linear-gradient(rgba(8, 6, 4, 0.6), rgba(8, 6, 4, 0.85)),
-    url('/sprites/victory-background.png');
+    url('./assets/victory-background.webp');
 }
 
 #end-overlay.defeat {
   background-image:
     linear-gradient(rgba(8, 6, 4, 0.65), rgba(8, 6, 4, 0.88)),
-    url('/sprites/defeat-background.png');
+    url('./assets/defeat-background.webp');
 }
 
 .overlay .panel {
@@ -863,8 +871,11 @@ html, body {
   background:
     radial-gradient(circle, var(--accent) 0, var(--accent-warm) 60%, transparent 100%);
 }
-.overlay .panel::before { top: -8px; left: -8px; }
-.overlay .panel::after  { bottom: -8px; right: -8px; }
+/* Sit the corner ornaments ON the border corner rather than hanging 8px
+ * outside — an outside offset made every overlay panel's scroll box overflow
+ * by 8px, forcing phantom scrollbars on the victory/defeat screen. */
+.overlay .panel::before { top: 2px; left: 2px; }
+.overlay .panel::after  { bottom: 2px; right: 2px; }
 
 .overlay h1 {
   margin: 0 0 16px;
@@ -1111,12 +1122,42 @@ html, body {
   justify-content: center;
 }
 .cutscene-overlay.hidden { display: none; }
-.cutscene-image {
-  max-width: 92vw;
-  max-height: 70vh;
-  object-fit: contain;
+/* Frame shrink-wraps the image (inline-block + max constraints, no object-fit)
+ * so the caption bar can anchor to the image's true bottom edge. */
+.cutscene-frame {
+  position: relative;
+  display: inline-block;
+  line-height: 0;
   margin-bottom: 14px;
   box-shadow: 0 8px 60px rgba(240,200,80,0.18);
+}
+.cutscene-image {
+  display: block;
+  max-width: 92vw;
+  max-height: 70vh;
+}
+/* Correct, DOM-rendered title over the image's bottom band (covers the baked
+ * caption, which had a typo on panel 1). */
+.cutscene-caption {
+  position: absolute;
+  left: 0; right: 0; bottom: 0;
+  /* Tall, fully-opaque bar: the baked-in title occupies the image's bottom
+   * band, so the solid fill must cover it completely (no peek-through). */
+  min-height: 20%;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 70px 28px 18px;
+  background: linear-gradient(to top,
+    rgb(8,5,3) 0%, rgb(8,5,3) 62%, rgba(8,5,3,0.85) 80%, transparent 100%);
+  color: var(--accent);
+  font-family: 'Cinzel', 'Georgia', serif;
+  font-weight: 600;
+  font-size: clamp(15px, 2.1vw, 26px);
+  line-height: 1.2;
+  letter-spacing: 0.5px;
+  text-align: center;
+  text-shadow: 0 2px 6px rgba(0,0,0,0.9);
 }
 
 .cutscene-narration {
@@ -1257,4 +1298,26 @@ html, body {
   padding: 2px 8px;
   border-radius: 10px;
   letter-spacing: 1px;
+}
+
+/* ===== Device gate (touch / small screens) ===== */
+.device-panel {
+  max-width: 460px;
+  width: 90%;
+  text-align: center;
+  padding: 32px 28px;
+}
+.device-panel .title-rule { margin: 14px auto; }
+.device-msg {
+  color: var(--text-dim);
+  line-height: 1.55;
+  font-size: 14.5px;
+  margin: 10px 0;
+}
+.device-msg b { color: var(--text); }
+.device-foot {
+  color: var(--accent-dim);
+  font-size: 11px;
+  letter-spacing: 1px;
+  margin-top: 18px;
 }

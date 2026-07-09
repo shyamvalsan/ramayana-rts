@@ -9,7 +9,7 @@ import { ABILITY_DEFS } from '@/config/abilities';
 import { TECH_DEFS } from '@/config/techs';
 import type { Command, Entity, ResourceKind, Vec2 } from '@/core/types';
 import type { Game } from '@/core/game';
-import { buildingSpriteKey, unitSpriteKey } from '@/render/sprites';
+import { buildingSpriteKey, unitSpriteKey, portraitSrc } from '@/render/sprites';
 import { asset } from '@/util/assets';
 
 // NOTE: the gather-wood/food/gold/stone, build, patrol and move kinds below,
@@ -219,12 +219,28 @@ export class HUD {
     this.renderActions(e, sel.filter(s => s.kind === 'unit'));
   }
 
+  // Cache portrait data-URLs per sprite key: toDataURL is too costly to run
+  // every frame, and a keyed canvas is stable once loaded.
+  private portraitCache = new Map<string, string>();
+  private portraitFor(spriteKey: string): string {
+    let src = this.portraitCache.get(spriteKey);
+    if (src === undefined) {
+      const s = portraitSrc(spriteKey);
+      if (s) { src = s; this.portraitCache.set(spriteKey, s); }
+    }
+    return src ?? '';
+  }
+
   private renderPortrait(e: Entity, sel: Entity[]) {
     const isUnit = e.kind === 'unit';
     const isBuilding = e.kind === 'building';
     const def: any = isUnit ? UNIT_DEFS[e.typeId] : isBuilding ? BUILDING_DEFS[e.typeId] : null;
     const spriteKey = isUnit ? unitSpriteKey(e.typeId) : isBuilding ? buildingSpriteKey(e.typeId) : null;
-    const portrait = spriteKey ? `<img src="${asset(`sprites/${spriteKey}.webp`)}" alt="" />` : '';
+    // Units use the chroma-keyed (transparent) canvas so heroes/VIPs/bosses
+    // read on the dark frame; buildings keep their painted sprite.
+    let src = '';
+    if (spriteKey) src = isUnit ? this.portraitFor(spriteKey) : asset(`sprites/${spriteKey}.webp`);
+    const portrait = src ? `<img src="${src}" alt="" />` : '';
     const hpPct = Math.max(0, e.hp / Math.max(1, e.maxHp));
     const hpClass = hpPct > 0.5 ? '' : (hpPct > 0.25 ? 'low' : 'critical');
     let stats = '';
